@@ -79,9 +79,19 @@ def _as_date(value: Any) -> str | None:
 
 
 def _default_spill_directory(path: Path) -> Path:
-    """Return the project-level DuckDB spill directory for a Parquet path."""
+    """Return a writable project-level DuckDB spill directory.
 
-    return path.parents[2] / "temp" / "duckdb"
+    Production Parquet files live below the repository and can use its
+    ``temp/duckdb`` directory. Synthetic tests may live directly below the
+    operating system temporary directory, where fixed parent indexing can
+    otherwise resolve to ``/temp`` on POSIX systems.
+    """
+
+    resolved = path.expanduser().resolve()
+    for candidate in resolved.parents:
+        if (candidate / "pyproject.toml").is_file():
+            return candidate / "temp" / "duckdb"
+    return resolved.parent / "temp" / "duckdb"
 
 
 def _cache_config(config: S0AuditConfig) -> dict[str, Any]:
