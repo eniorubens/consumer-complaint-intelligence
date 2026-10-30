@@ -2,6 +2,8 @@
 
 **Idioma:** [English](README.md) | Português (Brasil)
 
+[![CI](https://github.com/eniorubens/consumer-complaint-intelligence/actions/workflows/cci-ci.yml/badge.svg)](https://github.com/eniorubens/consumer-complaint-intelligence/actions/workflows/cci-ci.yml)
+
 Este projeto roteia narrativas livres de reclamações de consumidores do CFPB
 Consumer Complaint Database para nove famílias de produto, e estuda **o que é
 preciso para confirmar honestamente que um classificador de texto funciona
@@ -428,7 +430,7 @@ na máquina. Para uma abertura de selo, essa é a fronteira melhor.
 ```bash
 mamba env create -f environment.yml
 mamba activate consumer-nlp
-python -m pip install -e .
+python -m pip install -e ".[test]"
 python -m ipykernel install --user --name consumer-nlp --display-name "Python (consumer-nlp)"
 ```
 
@@ -448,10 +450,10 @@ ambiente.
 ## Validação
 
 ```bash
-python -m unittest discover -s tests -t .
+python -m pytest -q --tb=short
 ```
 
-A suíte roda 348 testes cobrindo contratos, taxonomia, deduplicação, split
+A suíte atualmente coleta 436 testes cobrindo contratos, taxonomia, deduplicação, split
 temporal, cada runner de etapa, cada manifesto de resultado, estrutura de
 notebook e identidade de código PT-BR/EN-US, convenções de docstring e largura
 de linha, montagem do bundle do Kaggle e as asserções de integridade de selo

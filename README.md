@@ -2,6 +2,8 @@
 
 **Language:** English | [Português (Brasil)](README.pt-BR.md)
 
+[![CI](https://github.com/eniorubens/consumer-complaint-intelligence/actions/workflows/cci-ci.yml/badge.svg)](https://github.com/eniorubens/consumer-complaint-intelligence/actions/workflows/cci-ci.yml)
+
 This project routes free-text consumer complaints from the CFPB Consumer
 Complaint Database into nine product families, and studies **what it takes to
 honestly confirm that a text classifier works on data it has never seen**.
@@ -422,7 +424,7 @@ Parquet on the machine. For a sealed opening that is the better boundary.
 ```bash
 mamba env create -f environment.yml
 mamba activate consumer-nlp
-python -m pip install -e .
+python -m pip install -e ".[test]"
 python -m ipykernel install --user --name consumer-nlp --display-name "Python (consumer-nlp)"
 ```
 
@@ -442,10 +444,10 @@ dependencies.
 ## Validation
 
 ```bash
-python -m unittest discover -s tests -t .
+python -m pytest -q --tb=short
 ```
 
-The suite runs 348 tests covering contracts, taxonomy, deduplication,
+The suite currently collects 436 tests covering contracts, taxonomy, deduplication,
 temporal split, every stage runner, every result manifest, notebook structure
 and PT-BR/EN-US code identity, docstring and line-length conventions, Kaggle
 bundle assembly, and the seal integrity assertions described above.
