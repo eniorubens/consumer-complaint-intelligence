@@ -18,6 +18,16 @@ Dois ciclos completos responderam a essa pergunta. Os dois retornaram
 `NOT_CONFIRMED`. A entrega é o protocolo e a evidência, não um modelo
 implantável.
 
+## 🎯 Escopo e evidências
+
+**Pode sustentar:** auditoria de protocolo, avaliação de classe rara e desenho de estudo futuro em partições não consumidas.
+
+**Não sustenta:** deployment produtivo confirmado, reabertura de veredictos consumidos ou uso de métricas de desenvolvimento como performance.
+
+**Superfície de engenharia:** etapas modulares em `src/`, manifestos públicos de resultado, contratos de artefato e cobertura automatizada de testes; o estudo congelado não autoriza serving.
+
+**Camada de governança:** o [relatório executivo](https://eniorubens.github.io/enioRubens_dataScienceProjects/Consumer_Complaint_Intelligence/) preserva as partições seladas, os gates confirmatórios e a decisão `deploy=false`.
+
 ## Resultado executivo
 
 Duas partições seladas foram abertas, cada uma exatamente uma vez, cada uma sob
@@ -206,11 +216,11 @@ protocolo de stress, não contém resultados de stress, não contém caminho com
 
 ## Fluxo de etapas
 
-Treze pares de notebooks, vinte e seis notebooks. PT-BR é a edição canônica;
-EN-US é editorialmente equivalente e compartilha células de código idênticas
-byte a byte. Toda a lógica vive em `src/`; os notebooks orquestram e reportam,
-e têm padrão `RUN_MODE = disabled`, lendo a evidência persistida quando
-disponível.
+Quinze pares de notebooks, trinta notebooks. PT-BR é a edição canônica;
+EN-US é editorialmente equivalente e compartilha a mesma lógica auditada em
+`src/`. Os notebooks orquestram e reportam, lendo por padrão apenas evidência
+persistida, salvo quando um contrato de etapa autoriza explicitamente outra
+operação.
 
 | Etapa | PT-BR | EN-US | Papel na evidência |
 |---|---|---|---|
@@ -227,6 +237,8 @@ disponível.
 | 11 - V2 import do Kaggle | [PT-BR](notebooks/pt-BR/11_V2_Kaggle_Import_PT.ipynb) | [EN-US](notebooks/en-US/11_V2_Kaggle_Import_EN.ipynb) | Import da evidência D1 e D2 |
 | 12 - V2 pacote congelado | [PT-BR](notebooks/pt-BR/12_V2_Frozen_Package_PT.ipynb) | [EN-US](notebooks/en-US/12_V2_Frozen_Package_EN.ipynb) | Seleção e congelamento |
 | 13 - V2 confirmatório em stress | [PT-BR](notebooks/pt-BR/13_V2_Stress_Confirmatory_PT.ipynb) | [EN-US](notebooks/en-US/13_V2_Stress_Confirmatory_EN.ipynb) | **Confirmatório, `stress`** |
+| 14 - V3-E2 auditoria do cache de embeddings | [PT-BR](notebooks/pt-BR/14_V3_E2_Embedding_Cache_Audit_PT.ipynb) | [EN-US](notebooks/en-US/14_V3_E2_Embedding_Cache_Audit_EN.ipynb) | Integridade somente leitura do cache de desenvolvimento |
+| 15 - V3-E3 probes temporais | [PT-BR](notebooks/pt-BR/15_V3_E3_Temporal_Probes_PT.ipynb) | [EN-US](notebooks/en-US/15_V3_E3_Temporal_Probes_EN.ipynb) | Resultados rolling-origin MiniLM/TF-IDF auditados |
 
 ## Ciclo um: desenvolvimento clássico até o S8
 
@@ -383,11 +395,15 @@ Proibido:
 | `src/consumer_complaint_intelligence/v2_package.py` | Seleção, portão de reprodução exata, congelamento |
 | `src/consumer_complaint_intelligence/v2_stress.py` | Runner confirmatório de dois braços do V2.1-C |
 | `src/consumer_complaint_intelligence/v2_import.py` | Import e renderização reprodutíveis da evidência do Kaggle |
+| `src/consumer_complaint_intelligence/v3/` | Protocolo V3, cache MiniLM, probes temporais, relatórios e pacote congelado |
 | `src/consumer_complaint_intelligence/kaggle_execution.py` | Montagem do bundle para execução remota |
 | `src/consumer_complaint_intelligence/contracts.py`, `service.py`, `tracking.py` | `Predictor` / `PredictionBatch` / `ArtifactManifest`, superfície de serving, tracker opcional |
 | `config/*.json` | Protocolos congelados e manifestos públicos de resultado com hashes |
-| `docs/ADR-001` a `ADR-014` | Cada decisão, com sua razão e seu custo |
-| `tests/` | 348 testes em 28 módulos de teste |
+| `temp/*/*.json` | Manifestos congelados de resultado por etapa. Apesar do nome, não é uma pasta de rascunho: protocolos, testes e notebooks referenciam esses caminhos e seus hashes SHA-256, por isso a pasta é mantida como está |
+| `docs/ADR-001` a `ADR-017` | Cada decisão, com sua razão e seu custo; ADR-017 está aprovada e aguarda a fonte completa de 2026 |
+| [`docs/guia_defesa_consumer_complaint_intelligence.md`](docs/guia_defesa_consumer_complaint_intelligence.md) | Respostas metodológicas curtas para defesa e entrevistas |
+| [`config/v3/confirmation_protocol.json`](config/v3/confirmation_protocol.json) | V3-C aprovado: cinco gates, janela completa de 2026 e execução ainda bloqueada pela fonte futura |
+| `tests/` | 436 testes em 38 módulos de teste |
 
 Três fronteiras arquiteturais valem para todo o projeto:
 
@@ -402,6 +418,8 @@ Três fronteiras arquiteturais valem para todo o projeto:
 O campo `score` significa `critical_margin` e nada mais. Não é probabilidade
 nem confiança. A entrada do estimador é exclusivamente `en-US`, ainda que a API
 e a documentação sejam bilíngues.
+
+Alguns desses manifestos congelados (por exemplo `temp/v2/v2_stress_results.json`) registram caminhos absolutos da máquina que executou a etapa. Foram deixados intactos de propósito: editá-los mudaria o SHA-256 e invalidaria a cadeia de hashes pré-registrada.
 
 ## Ambientes de execução
 
