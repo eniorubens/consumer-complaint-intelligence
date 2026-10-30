@@ -18,6 +18,16 @@ Two full cycles were run against that question. Both returned
 `NOT_CONFIRMED`. The deliverable is the protocol and the evidence, not a
 deployable model.
 
+## 🎯 Scope and evidence
+
+**Can support:** protocol audit, rare-class evaluation and design of a future study on unconsumed partitions.
+
+**Does not support:** confirmed production deployment, reopening consumed verdicts, or treating development metrics as performance.
+
+**Engineering surface:** modular `src/` stages, public result manifests, artifact contracts and automated test coverage; the frozen study does not authorize serving.
+
+**Governance layer:** [Executive report](https://eniorubens.github.io/enioRubens_dataScienceProjects/Consumer_Complaint_Intelligence/) preserves sealed partitions, confirmatory gates and the `deploy=false` decision.
+
 ## Executive Result
 
 Two sealed partitions were opened, each exactly once, each under a protocol
@@ -201,10 +211,11 @@ the unlock variable.
 
 ## Stage Workflow
 
-Thirteen notebook pairs, twenty-six notebooks. PT-BR is the canonical edition;
-EN-US is editorially equivalent and shares byte-identical code cells. All
-logic lives in `src/`; notebooks orchestrate and report, and default to
-`RUN_MODE = disabled`, reading persisted evidence when available.
+Fifteen notebook pairs, thirty notebooks. PT-BR is the canonical
+edition; EN-US is editorially equivalent and shares the same audited source
+logic. All logic lives in `src/`; notebooks orchestrate and report, and default
+to read-only persisted evidence unless an explicit stage contract says
+otherwise.
 
 | Stage | PT-BR | EN-US | Evidence role |
 |---|---|---|---|
@@ -221,6 +232,8 @@ logic lives in `src/`; notebooks orchestrate and report, and default to
 | 11 - V2 Kaggle import | [PT-BR](notebooks/pt-BR/11_V2_Kaggle_Import_PT.ipynb) | [EN-US](notebooks/en-US/11_V2_Kaggle_Import_EN.ipynb) | D1 and D2 evidence import |
 | 12 - V2 frozen package | [PT-BR](notebooks/pt-BR/12_V2_Frozen_Package_PT.ipynb) | [EN-US](notebooks/en-US/12_V2_Frozen_Package_EN.ipynb) | Selection and freeze |
 | 13 - V2 stress confirmatory | [PT-BR](notebooks/pt-BR/13_V2_Stress_Confirmatory_PT.ipynb) | [EN-US](notebooks/en-US/13_V2_Stress_Confirmatory_EN.ipynb) | **Confirmatory, `stress`** |
+| 14 - V3-E2 embedding cache audit | [PT-BR](notebooks/pt-BR/14_V3_E2_Embedding_Cache_Audit_PT.ipynb) | [EN-US](notebooks/en-US/14_V3_E2_Embedding_Cache_Audit_EN.ipynb) | Read-only development-cache integrity |
+| 15 - V3-E3 temporal probes | [PT-BR](notebooks/pt-BR/15_V3_E3_Temporal_Probes_PT.ipynb) | [EN-US](notebooks/en-US/15_V3_E3_Temporal_Probes_EN.ipynb) | Audited rolling-origin MiniLM/TF-IDF results |
 
 ## Cycle One: Classical Development to S8
 
@@ -378,11 +391,15 @@ Prohibited:
 | `src/consumer_complaint_intelligence/v2_package.py` | Selection, exact-reproduction gate, freeze |
 | `src/consumer_complaint_intelligence/v2_stress.py` | V2.1-C two-arm confirmatory runner |
 | `src/consumer_complaint_intelligence/v2_import.py` | Reproducible import and rendering of Kaggle evidence |
+| `src/consumer_complaint_intelligence/v3/` | V3 protocol, MiniLM cache, temporal probes, reporting, and frozen package |
 | `src/consumer_complaint_intelligence/kaggle_execution.py` | Bundle assembly for remote execution |
 | `src/consumer_complaint_intelligence/contracts.py`, `service.py`, `tracking.py` | `Predictor` / `PredictionBatch` / `ArtifactManifest`, serving surface, optional tracker |
 | `config/*.json` | Frozen protocols and public result manifests with hashes |
-| `docs/ADR-001` to `ADR-014` | Every decision, with its rationale and its cost |
-| `tests/` | 348 tests across 28 test modules |
+| `temp/*/*.json` | Frozen stage result manifests. Despite the name, this is not a scratch directory: protocols, tests and notebooks reference these paths and their SHA-256 hashes, so the folder is kept as is |
+| `docs/ADR-001` to `ADR-017` | Every decision and its cost; ADR-017 is approved and awaits the complete 2026 source |
+| [`docs/guia_defesa_consumer_complaint_intelligence.md`](docs/guia_defesa_consumer_complaint_intelligence.md) | Concise methodological answers for project-defense interviews |
+| [`config/v3/confirmation_protocol.json`](config/v3/confirmation_protocol.json) | Approved V3-C: five gates, complete 2026 window, and execution still blocked on the future source |
+| `tests/` | 436 tests across 38 test modules |
 
 Three architectural boundaries hold across the whole project:
 
@@ -397,6 +414,8 @@ Three architectural boundaries hold across the whole project:
 The `score` field means `critical_margin` and nothing else. It is not a
 probability and not a confidence. Estimator input is `en-US` only, even though
 the API and documentation are bilingual.
+
+A few of those frozen manifests (for example `temp/v2/v2_stress_results.json`) record absolute paths from the machine that executed the stage. They are left untouched on purpose: editing them would change their SHA-256 and invalidate the pre-registered hash chain.
 
 ## Execution Environments
 
