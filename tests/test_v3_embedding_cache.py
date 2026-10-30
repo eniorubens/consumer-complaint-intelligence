@@ -62,6 +62,10 @@ class V3EmbeddingCacheTests(unittest.TestCase):
         for forbidden in ("'test'", "'stress'", "'monitor'"):
             self.assertNotIn(forbidden, query)
 
+    @unittest.skipUnless(
+        SOURCE.exists(),
+        "the local scientific cache is private and is not part of the repository",
+    )
     def test_real_source_aggregate_support_and_group_uniqueness_match(self) -> None:
         """Audit metadata only, without loading or persisting narratives."""
 

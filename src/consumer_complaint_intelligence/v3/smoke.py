@@ -229,7 +229,13 @@ def _package_versions() -> dict[str, str]:
         "numpy",
         "scikit-learn",
     )
-    return {name: importlib.metadata.version(name) for name in names}
+    versions: dict[str, str] = {}
+    for name in names:
+        try:
+            versions[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            versions[name] = "not-installed"
+    return versions
 
 
 def _load_real_encoder(config: SmokeConfig, cache_folder: Path) -> tuple[Any, Any]:
